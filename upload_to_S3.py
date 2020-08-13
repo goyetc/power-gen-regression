@@ -11,7 +11,7 @@ def upload(local_file, bucket):
     s3_file_name = '{}'.format(os.path.basename(local_file))
     
     try:
-        s3.upload_file(local_file, bucket, s3_file_name)
+        s3.upload_file(local_file, bucket, s3_file_name, ExtraArgs={'ACL':'public-read'})
         print(str(s3_file_name) + " Upload Successful")
         return True
     except FileNotFoundError:

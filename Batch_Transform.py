@@ -36,7 +36,7 @@ import json
 
 def inference_prep(data):
     print("preparing target date range for inference..")
-
+    
     data.columns = ['HDF', 'date', 'half_hour_increment',
                       'CCGT', 'OIL', 'COAL', 'NUCLEAR',
                       'WIND', 'PS', 'NPSHYD', 'OCGT',
@@ -48,6 +48,8 @@ def inference_prep(data):
 
     data['datetime'] = data.apply(lambda x:x['datetime']+ datetime.timedelta(minutes=30*(int(x['half_hour_increment'])-1)), 
                               axis = 1)
+    
+    data['timestamp'] = df.loc[:,'datetime']
 
     # Let's try to predict TOTAL power production using all available generation types
 
@@ -61,6 +63,7 @@ def inference_prep(data):
     floor = data['y'].min()
     data['cap'] = cap
     data['floor'] = floor
+    
     
     prepped = data[['ds', 'y','cap','floor']]
     
@@ -148,7 +151,7 @@ def split_data_export(df,n,prefix):
 pred_data = full.set_index('ds')
 preds = forecast[['yhat','ds']].set_index('ds')
 preds = pd.merge(pred_data, preds, how='inner', on='ds')
-cols = ['date', 'CCGT', 'OIL', 'COAL', 'NUCLEAR',
+cols = ['timestamp', 'CCGT', 'OIL', 'COAL', 'NUCLEAR',
        'WIND', 'PS', 'NPSHYD', 'OCGT', 'OTHER', 'INTFR', 'INTIRL', 'INTNED',
        'INTEW', 'BIOMASS', 'INTEM', 'yhat']
 preds = preds[cols]
@@ -166,17 +169,17 @@ preds = preds.rename(columns = {'yhat':'y'})
 print(cols)
 
 # Export predictions & associated inputs
-inputs_preds = split_data_export(preds,1,'batch_preds')
+inputs_preds = split_data_export(preds,1,'predictions')
 print(inputs_preds)
 
 # Now, ground truth
-dt = full[['date','ds','y']].reset_index(drop=True).set_index('ds').rename(columns = {'y':'y_gt'})
+dt = full[['timestamp','ds','y']].reset_index(drop=True).set_index('ds').rename(columns = {'y':'y_gt'})
 
 # select datetimes from test dataset (ground truth) that match new prediction datetimes
 gt = dt[dt.index.isin(preds.index)]
 
 # Export
-ground_truth = split_data_export(gt,1,'gt')
+ground_truth = split_data_export(gt,1,'ground_truth')
 print(ground_truth)
 
 def file_list():
