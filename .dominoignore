@@ -38,3 +38,5 @@ octave-core
 # General
 ~*
 
+*__pycache__*
+*.ipynb_checkpoints*

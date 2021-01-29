@@ -1,10 +1,12 @@
 import datetime
 import requests
 import subprocess
+import sys
 
 def refresh(save_location, days):
     #note: shift one extra day to facilitate producing 'latest' data in Batch Transform script
-    today = (datetime.datetime.today() - datetime.timedelta(days=1)).strftime('%Y-%m-%d')
+    today = datetime.datetime.today().strftime('%Y-%m-%d')
+    #today = (datetime.datetime.today() - datetime.timedelta(days=1)).strftime('%Y-%m-%d')
     
     duration = (datetime.datetime.today() - datetime.timedelta(days)).strftime('%Y-%m-%d')
 

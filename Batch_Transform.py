@@ -81,6 +81,12 @@ data_refresh.refresh('/mnt/data/daily_pred_data.csv', 1)
 #read in our data
 df = pd.read_csv('/mnt/data/daily_pred_data.csv', skiprows=1, skipfooter=1, header=None, engine='python')
 
+#NOTE: at some point around November of 2020, new features were added to this dataset
+#https://www.bmreports.com/bmrs/?q=generation/fueltype/current
+
+#TEMP FIX: choose first 18 columns
+df = df.iloc[:,:18]
+
 #prep data for inference
 full, df_for_inf = inference_prep(df)
 
@@ -200,10 +206,16 @@ file_list()
 #  - https://boto3.amazonaws.com/v1/documentation/api/latest/guide/s3-uploading-files.html
 
 #listOfFile = os.listdir('results')
+    
+with open('temp/preds_and_gt_file_dict.json') as json_file: 
+    data = json.load(json_file)
 
-'''for name in inputs_preds:
-    upload_to_S3.upload(name, 'dmm-cg-1')
+preds = data['predictions']
+ground_truth = data['ground_truth']
+
+for name in preds:
+    upload_to_S3.upload(name, 'dmm-cg-2')
     
 for name in ground_truth:
-    upload_to_S3.upload(name, 'dmm-cg-1')'''
+    upload_to_S3.upload(name, 'dmm-cg-2')
     
