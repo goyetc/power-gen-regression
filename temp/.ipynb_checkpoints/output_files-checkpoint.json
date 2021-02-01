@@ -1,0 +1,1 @@
+{"train": ["/mnt/results/training.csv"], "predictions": ["/mnt/results/predictions_partition1.csv", "/mnt/results/predictions_partition2.csv", "/mnt/results/predictions_partition3.csv", "/mnt/results/predictions_partition4.csv"], "ground_truth": ["/mnt/results/ground_truth_partition1.csv", "/mnt/results/ground_truth_partition2.csv"]}
